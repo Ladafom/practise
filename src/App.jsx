@@ -5,24 +5,7 @@ import Home from './modules/Home'
 import Dashboards from './modules/Dashboards_keeper/Dashboards'
 import './App.css'
 
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <Home/>,
-//   },
-//   {
-//     path:'/dashboard/1',
-//     element:<Dashboards authed={true} />,
-//   },
-//   {
-//     path:'/dashboard/2',
-//     element:<Dashboards port={8002} ipBoard={'localhost'}/>,
-//   },
-//   {
-//     path:'/dashboard/3',
-//     element:<Dashboards port={8003} ipBoard={'localhost'}/>,
-//   },
-// ]);
+
 function App(){
   const [dbData, setdbData] = React.useState([{
     "boardId": "none",

@@ -12,28 +12,28 @@ function TresholdTable(props){
       <tr>
         <td>Temperature, C</td>
         <td>
-          {props.allValues[props.allValues.length-1].tempUpper}
+          {Math.round(props.allValues[props.allValues.length-1].tempUpper * 100)/100}
         </td>
         <td>
-          {props.allValues[props.allValues.length-1].tempLower}
+          {Math.round(props.allValues[props.allValues.length-1].tempLower* 100)/100}
         </td>
       </tr>
       <tr>
         <td>VCCBram, V</td>
         <td>
-          {props.allValues[props.allValues.length-1].VCCBramUpper}
+          {Math.round(props.allValues[props.allValues.length-1].VCCBramUpper*100)/100}
         </td>
         <td>
-          {props.allValues[props.allValues.length-1].VCCBramLower}
+          {Math.round(props.allValues[props.allValues.length-1].VCCBramLower*100)/100}
         </td>
       </tr>
       <tr>
         <td>VCCaux, V</td>
         <td>
-          {props.allValues[props.allValues.length-1].VCCauxUpper}
+          {Math.round(props.allValues[props.allValues.length-1].VCCauxUpper *100)/100}
         </td>
         <td>
-          {props.allValues[props.allValues.length-1].VCCauxLower}
+          {Math.round(props.allValues[props.allValues.length-1].VCCauxLower*100)/100}
         </td>
       </tr>
     </table>

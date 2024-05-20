@@ -3,8 +3,8 @@ import { Link } from "react-router-dom"
 import '../styles/home.css'
 
 let timeout
-
 function HomeLine(props){
+  // объявление переменных
   const [allErrorsSensore, setAllErrorsSensore] = React.useState([{
     "errors": "undefined"}])
   const [catchFetchErrorSensore, setCatchFetchErrorSensore] = React.useState(false)
@@ -13,43 +13,42 @@ function HomeLine(props){
   const [editStatus, setEditStatus] = React.useState(false)
 
   React.useEffect(()=>{
-    renderAll()
+    renderAll() // вызов get-запроса
   },[])
 
-  async function renderAll(){
+  async function renderAll(){ // функция выполнения get-запроса
+    // вызов функции get-запроса
     await getApiData(props.ipBoard,props.portNum,setAllErrorsSensore,setCatchFetchErrorSensore,catchFetchErrorSensore)
-    timeout=window.setTimeout(renderAll, 1000)
-    // console.log(catchFetchErrorSensore)
+    timeout=window.setTimeout(renderAll, 1000) // выполнение get-запроса каждую секунду (установка таймаута)
   }
+  // функция get-запроса об общем состоянии платы
   async function getApiData(ipBoard,portNum, SetUseEffect, setCatchFetchError,catchFetchError) {
-    fetch(`http://${ipBoard}:${portNum}/sensore`,{
-      signal: AbortSignal.timeout(500)
-    })
+    fetch(`http://${ipBoard}:${portNum}/sensore`) // отправка get-запроса на сервер
     .then(res => {
-      if(res.ok){
-        setCatchFetchError(false)
-        return res.json()
-      }
+      if(res.ok){ // если ответ получен
+        setCatchFetchError(false) // переменная catchFetchErrorSensore == false
+        return res.json() // переход на следующий метод then
+      } // сообщить об ошибке, если ответ не получен
       else{throw new Error('Something went wrong')}
     })
-    .then(data => {SetUseEffect(data)})
-    .catch((error) => {
-      setCatchFetchError(true)
+    .then(data => {SetUseEffect(data)}) // запись данных с сервера в объект catchFetchErrorSensore
+    .catch((error) => { // если была поймана ошибка при получении ответа
+      setCatchFetchError(true) // переменная catchFetchErrorSensore == true
     });
   }
-  async function editDataBase(){
-    const requestOptions = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
+  async function editDataBase(){ // функция put-запроса к серверу
+    const requestOptions = { // содержимое запроса
+      method: 'PUT', // объявление метода запроса
+      headers: { // заголовок запроса
+        'Content-Type': 'application/json' // тип отсылаемого запроса - json
       },
-      body: JSON.stringify({"locale": localeContent,
+      body: JSON.stringify({"locale": localeContent, // тело запроса
                             "note": noteContent,
                             'boardId':props.idBoard})
     };
     await fetch(`http://localhost:8001/boards/${props.idBoard}`, requestOptions)
   }
-  async function deleteRowDataBase(){
+  async function deleteRowDataBase(){ // функция delete-запроса к серверу
     const requestOptions = {
       method: 'DELETE',
       headers: {
@@ -58,26 +57,25 @@ function HomeLine(props){
       body: JSON.stringify({'boardId':props.idBoard})
     };
     await fetch(`http://localhost:8001/boards/${props.idBoard}`, requestOptions)
-    props.dataBaseApiHandler()
+    props.dataBaseApiHandler() // вызов get-запроса
   }
 
-  function editManage(){
+  function editManage(){ // функция отслеживания изменений в БД
     setEditStatus(!editStatus)
-    if(editStatus === true){
-      editDataBase()
-      props.dataBaseApiHandler()
+    if(editStatus === true){ // если статус редактирования true
+      editDataBase() // вызов функции put-запроса к серверу
+      props.dataBaseApiHandler() // вызов get-запроса
     }
   }
   function timeOutHandler(){
-    window.opener.clearTimeout(timeout)
-    // console.log(window.opener)
+    window.opener.clearTimeout(timeout) // очистка таймаута
   }
   return(
     <>
       <tr className={`line ${catchFetchErrorSensore ?
           'critical-error': allErrorsSensore[allErrorsSensore.length-1].errors > 0 ?
           'error':''}`}>
-        <td>
+        <td> {/*переход на страницу платы*/}
           <Link to={`dashboard/${props.idBoard}`} onClick={timeOutHandler}>
             {props.ipBoard} <br/> (Нажмите сюда, чтобы увидеть детали)
           </Link>
@@ -85,11 +83,11 @@ function HomeLine(props){
         <td>
           {props.portNum}
         </td>
-        <td>
+        <td> {/*статус платы*/}
         {catchFetchErrorSensore ? 'Нет ответа' :
             allErrorsSensore[allErrorsSensore.length-1].errors > 0 ? 'Ошибка' : 'OК'}
         </td>
-        <td>
+        <td> {/* если статус редактирования true, разрешить запись в поле*/}
           {editStatus ?
             <textarea rows="5" cols="33"
               value={localeContent}
@@ -108,12 +106,12 @@ function HomeLine(props){
             </textarea> :
             <p style={{background:'none'}}>{props.note}</p>
           }
-        </td>
+        </td> {/*кнопка отправки put-запроса*/}
         <button onClick={editManage}>{editStatus? 'Опубликовать':'Редактировать'}</button>
+        {/*кнопка отправки delete-запроса*/}
         <button onClick={deleteRowDataBase}>Удалить</button>
       </tr>
     </>
   )
 }
-
 export default HomeLine

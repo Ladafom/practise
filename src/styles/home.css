@@ -42,6 +42,14 @@
 .line.error *{
   background-color: rgba(173, 33, 33, 0.511);
 }
+.line > button{
+  background-color: rgba(221, 221, 221, 0.8) !important;
+  display: flex;
+  flex-direction: column;
+  margin:10px;
+  border: 1px solid #000;
+  border-radius: 3px;
+}
 .form-buttons > button {
   font-size: 14px;
   margin: 0 10px 10px 0;
@@ -70,4 +78,7 @@ form{
   gap: 10px;
   font-size: 20px;
   margin: 0 0 0 50px;
+}
+textarea::placeholder{
+    color: #000;
 }

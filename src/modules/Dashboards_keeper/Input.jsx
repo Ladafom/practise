@@ -48,14 +48,24 @@ function Input(props){
 
   function handleChange(event){
     switch(props.name){
-      case 'temperature-upper' || 'temperature-lower':
+      case 'temperature-upper':
+        validation(event.target.value, 125.0, -40.0)
+        break
+      case 'temperature-lower':
         validation(event.target.value, 125.0, -40.0)
         break
       case 'VCCbram-upper' || 'VCCbram-lower':
         validation(event.target.value, 0.92, 0.86)
         break
+      case 'VCCbram-lower':
+        validation(event.target.value, 0.92, 0.86)
+        break
       case 'VCCaux-upper' || 'VCCaux-lower':
         validation(event.target.value, 1.89, 1.75)
+        break
+      case /*  */'VCCaux-lower':
+        validation(event.target.value, 1.89, 1.75)
+        break
     }
     // converter(parseValue)
     setUserValue(event.target.value)
@@ -77,7 +87,7 @@ function Input(props){
       <label htmlFor="">
         Изменить {props.name.split('-')[0]} {props.name.split('-')[1]}:
         <input type="text" value={userValue} onChange={handleChange} name={props.name} className={correctValue? '':'input-error'}/>
-        {!correctValue && <p>{errorText}</p>}
+        {!correctValue && <p className="warning-treshold">{errorText}</p>}
       </label>
       <button onClick={()=> establishValue(userValue)} disabled={correctValue ? '':'disabled'}> изменить значение </button>
     </div>
