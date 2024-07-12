@@ -1,7 +1,10 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import Graph from "./Graph"
+// import '../../styles/dashboard.css'
+import '../../styles/dashboard-table.css'
 import '../../styles/dashboard.css'
+import '../../styles/home-btn.css'
 import Dashboard from "./Dasboard"
 import MeasureTable from "../Dashboard_tables/MeasureTable"
 import Input from "./Input"
@@ -30,83 +33,83 @@ function Dashboards(props){
                                                     "VCCintLower":"undefined"}])
   const [catchFetchError, setCatchFetchError] = React.useState(false)
   React.useEffect(()=>{
-    renderAll() // вызов get-запроса
+    renderAll()
   },[])
-  async function renderAll(){ // функция выполнения get-запроса
-    await getApiData() // вызов функции get-запроса
-    timeout=setTimeout(renderAll, 1000); // выполнение get-запроса каждую секунду (установка таймаута)
+  async function renderAll(){
+    await getApiData()
+    timeout=setTimeout(renderAll, 1000);
   }
 
-    async function getApiData() { // функция get-запроса об общем состоянии платы
+    async function getApiData() {
       fetch(`http://${props.ipBoard}:${props.port}/sensore`,{
-        signal: AbortSignal.timeout(500) // прекратить ждать ответ после 0.5 секунд
+        signal: AbortSignal.timeout(500)
       })
       .then(res => {
-        if(res.ok){// если ответ получен
-          setCatchFetchError(false) // переменная catchFetchError == false
-          return res.json() // переход на следующий метод then
-        } // сообщить об ошибке, если ответ не получен
+        if(res.ok){
+          setCatchFetchError(false)
+          return res.json()
+        }
         else{throw new Error('Something went wrong')}
-      }) // запись данных с сервера в объект allValues
+      })
       .then(data => {setAllValues(data)})
-      .catch((error) => { // если была поймана ошибка при получении ответа
-        setCatchFetchError(true) // переменная catchFetchError == true
+      .catch((error) => {
+        setCatchFetchError(true)
       });
     }
-    async function handleClick(){ // функция post-запроса к серверу
-      const requestOptions = { // содержимое запроса
-        method: 'POST', // объявление метода запроса
-        headers: { // заголовок запроса
-          'Content-Type': 'application/json' // тип отсылаемого запроса - json
+    async function handleClick(){
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({buttonType: 'reset-btn'}) // тело запроса
+        body: JSON.stringify({buttonType: 'reset-btn'})
       };
       await fetch(`http://${props.ipBoard}:${props.port}/sensore`, requestOptions)
     }
 
     function timeOutHandler(){
-      clearTimeout(timeout)  // очистка таймаута
+      clearTimeout(timeout)
     }
 
   return(
-    <> {/* ссылка на главную страницу */}
-        <Link to={`/`} className="go-home-btn" onClick={timeOutHandler}>⬅ Go home</Link>
+    <>
+        <Link to={`/`} className="dashboard__btn dashboard__btn_margin" onClick={timeOutHandler}>⬅ Go home</Link>
         {catchFetchError ? <h1>Плата не отвечает</h1> :
       <>
-        <div className="tables"> {/* таблицы */}
+        <div className="dashboard-table_flex dashboard-table_margin">
           <AbsoluteMaximumRatings/>
           <RecommendedOperatingConditions/>
           <HintTable />
           <MeasureTable allValues={allValues}/>
           <TresholdTable allValues={allValues}/>
         </div>
-        <div className="dashboards">
-          <div> {/* график */}
-          <Dashboard allValues={allValues} yValue='VCCBram' lineColor='#f5b027' graphWidth={1600}
+        <div>
+          <div className="dashboard__graph_center"> {/* график */}
+          <Dashboard allValues={allValues} yValue='VCCBram' lineColor='#f5b027'
             dataValue={allValues[allValues.length-1].VCCBram} errors={allValues[allValues.length-1].errors[0]}
             data="VCCBram"/>
-          {/* поля для ввода новых граничных значений*/}
           <Input name="VCCbram-upper"port={props.port} ipBoard={props.ipBoard}/>
           <Input name="VCCbram-lower"port={props.port} ipBoard={props.ipBoard}/>
           </div>
-          <div>
-            <Dashboard allValues={allValues} yValue='VCCaux' lineColor='#FF7927' graphWidth={1600}
+          <div className="dashboard__graph_center">
+            <Dashboard allValues={allValues} yValue='VCCaux' lineColor='#FF7927'
               dataValue={allValues[allValues.length-1].VCCaux} errors={allValues[allValues.length-1].errors[2]}
               data="VCCaux"/>
             <Input name="VCCaux-upper"port={props.port} ipBoard={props.ipBoard}/>
             <Input name="VCCaux-lower"port={props.port} ipBoard={props.ipBoard}/>
           </div>
         </div>
-        <div className="dashboards">
-          <div>
-            <Graph data={allValues} yValue='temperature' lineColor='#8884d8' width={1600}/>
-            <p className="value">Температура: {allValues[allValues.length-1].temperature}C</p>
-            <p className="value">
+        <div>
+          <div className="dashboard__graph_center">
+            <Graph data={allValues} yValue='temperature' lineColor='#8884d8' width={1650}/>
+            <p className="dashboard__text dashboard__text_margin dashboard__text_padding">Температура:
+             {Math.round(allValues[allValues.length-1].temperature * 100)/100}°C</p>
+            <p className="dashboard__text dashboard__text_margin dashboard__text_padding">
               Наибольшее граничное значение потльзовательской температуры:
-              {allValues[allValues.length-1].temperature}C</p>
-            <p className={allValues[allValues.length-1].errors[7] === '1'
-            || allValues[allValues.length-1].errors[1] ==='1' ?
-            'error-text' : 'no error-text'} >
+              {Math.round(allValues[allValues.length-1].temperature * 100)/ 100}°C</p>
+            <p className={`dashboard__text dashboard__text_margin dashboard__text_padding dashboard__text_little
+              ${allValues[allValues.length-1].errors[7] === '1' || allValues[allValues.length-1].errors[1] ==='1' ?
+              'dashboard__text_error' : 'dashboard__text_ok'}`} >
               {allValues[allValues.length-1].errors[7] === '1' ?
               'Пользовательская температура находится за пороговым значением' :
               allValues[allValues.length-1].errors[1] === '1' ?
@@ -115,9 +118,12 @@ function Dashboards(props){
             <Input name="temperature-upper" port={props.port} ipBoard={props.ipBoard}/>
             <Input name="temperature-lower" port={props.port} ipBoard={props.ipBoard}/>
           </div>
-        </div> {/* кнопка сброса ошибок */}
-        <button onClick={handleClick} className="error-btn" disabled={allValues[allValues.length-1].errors === '00000000' ?
-              'disabled': allValues[allValues.length-1].errors === 'undefined' ? 'disabled' : ''}>Сбросить ошибки</button>
+        </div>
+        <button onClick={handleClick} className="home-btn home-btn_width home-btn_position"
+          disabled={allValues[allValues.length-1].errors === '00000000' ?
+          true: allValues[allValues.length-1].errors === 'undefined' ? true : false}>
+          Сбросить ошибки
+        </button>
       </> }
     </>
   )

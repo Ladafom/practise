@@ -1,78 +1,90 @@
 import React from "react"
-import '../styles/home.css'
+import '../styles/home-table.css'
+import '../styles/home-form.css'
+import '../styles/home-btn.css'
 import HomeLine from "./HomeLine"
 
 function Home(props){
-  // объявление переменных
-  // переменная addStatus типа boolean, отвечающая за статус добаления новой платы
+
+  React.useEffect(()=>{
+    setTableWidth(formRef.current.offsetWidth)
+  },[])
+  const formRef = React.useRef(0);
+  const [tableWidth, setTableWidth] = React.useState(500)
+  const formStyle = {
+    maxWidth : tableWidth
+    }
   const [addStatus,setAddStatus] = React.useState(false)
   const [boardIpContent, setBoardIpContent] = React.useState()
   const [boardPortContent, setBoardPortContent] = React.useState()
   const rows=[]
-  function showLines() { // функция объявления строк, содержащих информацию о платах
+
+  function showLines() {
     for (let i = 0; i < props.db.length; i++) {
       rows.push(<HomeLine idBoard={props.db[i].boardId} ipBoard={props.db[i].boardIp}
         portNum={props.db[i].portNum} locale={props.db[i].locale}
-        note={props.db[i].note} dataBaseApiHandler={props.dataBaseApi}/>);
+        note={props.db[i].note} dataBaseApiHandler={props.dataBaseApi}
+        key={props.db[i].boardId}/>);
     }
   }
-  async function addToDB(){ // функция post-запроса к серверу
-    const requestOptions = { // содержимое запроса
-      method: 'POST', // объявление метода запроса
-      headers: { // заголовок запроса
-        'Content-Type': 'application/json' // тип отсылаемого запроса - json
+  async function addToDB(){
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({'boardIp':boardIpContent, // тело запроса
+      body: JSON.stringify({'boardIp':boardIpContent,
                             'port':boardPortContent})
     };
-    // отправка запроса на сервер
     await fetch(`http://localhost:8001/boards/${props.idBoard}`, requestOptions)
   }
-    function changeAddStatus() { // функция изменения статуса добавления новой платы
-      setAddStatus(!addStatus) // изменение статуса на противоположный
-    }
-  showLines() // вызов функции объявления строк
+  function changeAddStatus() {
+    setAddStatus(!addStatus)
+  }
+  showLines()
 
-  return(
+    return(
     <>
-    <table className="home-table">
-      <tr>
-        <th>IP устройства</th>
-        <th>Порт</th>
-        <th>Статус</th>
-        <th>Местоположение</th>
-        <th>Заметки</th>
+    <table ref={formRef} className="home-table home-table_center">
+      <tr className="home-table__tr home-table_gray">
+        <th className="home-table__th home-table_gray">IP устройства</th>
+        <th className="home-table__th home-table_gray">Порт</th>
+        <th className="home-table__th home-table_gray">Статус</th>
+        <th className="home-table__th home-table_gray">Местоположение</th>
+        <th className="home-table__th home-table_gray">Заметки</th>
+        <th className="home-table__th home-table_gray">Действия</th>
       </tr>
         {rows}
     </table>
-    {/* если addStatus == true, то разрешено добавить новую плату*/}
     {addStatus ?
-      <form id="dbForm" action={addToDB}>
-        <label> Введите ip-адрес устройства:
-          {/* поле для ввода ip-адреса*/}
+      <form id="dbForm" style={formStyle} action={addToDB}
+      className="home-form home-form_center">
+        <label className="home-form__label_margin"> Введите ip-адрес устройства:
           <input type="text" value={boardIpContent}
                   placeholder="ip"
-                  onChange={e => setBoardIpContent(e.target.value)}>
+                  onChange={e => setBoardIpContent(e.target.value)}
+                  className="home-form__input home-form__input_positon"
+                  maxlength="15">
           </input>
         </label>
-        {/* поле для ввода порта*/}
-        <label> Введите порт устройства:
+        <label className="home-form__label_margin"> Введите порт устройства:
           <input type="text" value={boardPortContent}
                   placeholder="port"
-                  onChange={e => setBoardPortContent(e.target.value)}>
+                  onChange={e => setBoardPortContent(e.target.value)}
+                  className="home-form__input home-form__input_positon"
+                  maxlength="4">
           </input>
         </label>
-      <div className="form-buttons">
-        {/* кнопка отправки post-запроса*/}
-        <button onClick={addToDB}>Добавить</button>
-        {/* кнопка изменения статуса добавления новой платы*/}
-        <button onClick={changeAddStatus}>Отменить</button>
+      <div className="home-form__buttons_flex">
+        <button className="home-form__button"
+        onClick={addToDB}>Добавить</button>
+        <button className="home-form__button"
+        onClick={changeAddStatus}>Отменить</button>
       </div>
       </form>
     : <></>
     }
-    {/* кнопка изменения статуса добавления новой платы*/}
-    <button className="add-btn" onClick={changeAddStatus}
+      <button className="home-btn home-btn_position" style={formStyle} onClick={changeAddStatus}
       disabled={addStatus? true : false}>Новое устройство</button>
     </>
   )

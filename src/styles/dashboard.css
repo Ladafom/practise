@@ -1,44 +1,64 @@
-.dashboards{
-  /* display: flex; */
-  /* justify-content: space-between; */
-  /* flex-direction: row; */
-  margin: 20px 40px 20px 0;
+.dashboard__graph_center {
+  margin: 0 auto;
+  max-width: 1700px;
 }
-.value{
-  margin: 10px 50px;
+.dashboard__btn {
+  display: inline-block;
+  border: 2px solid #D0D4D8;
+  border-radius: 10px;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
-}
-.error-btn{
-  display: block;
-  margin: 0 40px 20px 50px;
-  width: 94%;
-  box-sizing: content-box;
-  font-size: 16px;
-  border-radius: 3px;
-  padding: 4px 7px;
+  color: #00355E;
+  background-color: #FBF9F5;
+  padding: 7px 15px;
   cursor: pointer;
-}
-.error-text{
-  font-size: 20px;
-  background-color: rgba(173, 33, 33, 0.511);
-  color: rgba(99, 12, 12, 0.8);
-  margin-left:50px;
-  max-width: 1600px;
-}
-.error-text.no{
-  background-color: rgba(69, 151, 69, 0.8);
-  color: rgba(32, 86, 32, 0.8);
-  max-width: 1600px;
-}
-.go-home-btn{
-  color: #000;
-  font-size: 20px;
   text-decoration: none;
-  margin-left:50px;
 }
-.tables{
+
+.dashboard__btn:disabled, .dashboard__btn:disabled:hover{
+  color: gray;
+  background-color: #FBF9F5;
+  cursor: default;
+}
+
+.dashboard__btn:hover {
+  background-color: #00355E;
+  color: #D0D4D8;
+}
+.dashboard__btn_little {
+  font-size: 16px;
+  padding: 3px 10px;
+  height: 35px;
+}
+.dashboard__btn_margin {
+  margin: 20px 0 0 20px;
+}
+.dashboard__text{
+  font-size: 20px;
+  color: #00355E;
+  font-family: "Roboto", sans-serif;
+  background-color: #EDECEA;
+  display: block;
+  max-width: 1620px;
+  box-sizing: border-box;
+}
+.dashboard__text_little{
+  font-size: 16px;
+}
+.dashboard__text_error{
+  background-color: rgba(244, 101, 99, 0.6);
+}
+.dashboard__text_ok{
+  background-color: rgba(117, 215, 172, 0.6);
+}
+.dashboard__text_margin{
+  margin: 0 0 0 20px;
+}
+.dashboard__text_padding {
+  padding: 5px 10px;
+}
+.dashboard_flex {
   display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap:20px 55px;
+  gap: 5px;
+  align-items: center;
 }

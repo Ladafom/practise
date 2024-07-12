@@ -1,0 +1,19 @@
+.home-btn {
+  display: block;
+  width: 100%;
+}
+.home-btn:disabled{
+  color: #D0D4D8;
+  cursor: auto;
+}
+.home-btn_position{
+  margin: 20px auto;
+}
+.home-btn_width{
+  width: 1630px;
+  box-sizing: border-box;
+}
+.home-btn:hover:not([disabled]) {
+  background-color: #00355E;
+  color: #D0D4D8;
+}

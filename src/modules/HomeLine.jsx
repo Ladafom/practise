@@ -1,54 +1,55 @@
 import React from "react";
-import { Link } from "react-router-dom"
-import '../styles/home.css'
-
+import { Link } from "react-router-dom";
+import '../styles/home-table.css';
+import delete_svg from '../images/delete.svg';
+import edit_svg from '../images/edit.svg';
+import success_svg from '../images/checkbox.svg'
 let timeout
 function HomeLine(props){
-  // объявление переменных
+
   const [allErrorsSensore, setAllErrorsSensore] = React.useState([{
     "errors": "undefined"}])
   const [catchFetchErrorSensore, setCatchFetchErrorSensore] = React.useState(false)
   const [noteContent, setNoteContent] = React.useState(props.note)
   const [localeContent, setLocaleContent] = React.useState(props.locale)
   const [editStatus, setEditStatus] = React.useState(false)
-
   React.useEffect(()=>{
-    renderAll() // вызов get-запроса
+    renderAll()
   },[])
 
-  async function renderAll(){ // функция выполнения get-запроса
-    // вызов функции get-запроса
+  async function renderAll(){
     await getApiData(props.ipBoard,props.portNum,setAllErrorsSensore,setCatchFetchErrorSensore,catchFetchErrorSensore)
-    timeout=window.setTimeout(renderAll, 1000) // выполнение get-запроса каждую секунду (установка таймаута)
+    timeout=window.setTimeout(renderAll, 1000)
   }
-  // функция get-запроса об общем состоянии платы
+
   async function getApiData(ipBoard,portNum, SetUseEffect, setCatchFetchError,catchFetchError) {
-    fetch(`http://${ipBoard}:${portNum}/sensore`) // отправка get-запроса на сервер
+    fetch(`http://${ipBoard}:${portNum}/sensore`)
     .then(res => {
-      if(res.ok){ // если ответ получен
-        setCatchFetchError(false) // переменная catchFetchErrorSensore == false
-        return res.json() // переход на следующий метод then
-      } // сообщить об ошибке, если ответ не получен
+      if(res.ok){
+        setCatchFetchError(false)
+        return res.json()
+      }
       else{throw new Error('Something went wrong')}
     })
-    .then(data => {SetUseEffect(data)}) // запись данных с сервера в объект catchFetchErrorSensore
-    .catch((error) => { // если была поймана ошибка при получении ответа
-      setCatchFetchError(true) // переменная catchFetchErrorSensore == true
+    .then(data => {SetUseEffect(data)})
+    .catch((error) => {
+      setCatchFetchError(true)
     });
   }
-  async function editDataBase(){ // функция put-запроса к серверу
-    const requestOptions = { // содержимое запроса
-      method: 'PUT', // объявление метода запроса
-      headers: { // заголовок запроса
-        'Content-Type': 'application/json' // тип отсылаемого запроса - json
+  async function editDataBase(){
+    const requestOptions = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"locale": localeContent, // тело запроса
+      body: JSON.stringify({"locale": localeContent,
                             "note": noteContent,
                             'boardId':props.idBoard})
     };
     await fetch(`http://localhost:8001/boards/${props.idBoard}`, requestOptions)
+    props.dataBaseApiHandler()
   }
-  async function deleteRowDataBase(){ // функция delete-запроса к серверу
+  async function deleteRowDataBase(){
     const requestOptions = {
       method: 'DELETE',
       headers: {
@@ -57,59 +58,61 @@ function HomeLine(props){
       body: JSON.stringify({'boardId':props.idBoard})
     };
     await fetch(`http://localhost:8001/boards/${props.idBoard}`, requestOptions)
-    props.dataBaseApiHandler() // вызов get-запроса
+    props.dataBaseApiHandler()
   }
-
-  function editManage(){ // функция отслеживания изменений в БД
+  function editManage(){
     setEditStatus(!editStatus)
-    if(editStatus === true){ // если статус редактирования true
-      editDataBase() // вызов функции put-запроса к серверу
-      props.dataBaseApiHandler() // вызов get-запроса
+    if(editStatus === true){
+      editDataBase()
     }
   }
   function timeOutHandler(){
-    window.opener.clearTimeout(timeout) // очистка таймаута
+    window.opener.clearTimeout(timeout)
   }
   return(
     <>
-      <tr className={`line ${catchFetchErrorSensore ?
-          'critical-error': allErrorsSensore[allErrorsSensore.length-1].errors > 0 ?
-          'error':''}`}>
-        <td> {/*переход на страницу платы*/}
+      <tr className={`home-table__tr ${catchFetchErrorSensore ?
+          'home-table__tr_critical-error': allErrorsSensore[allErrorsSensore.length-1].errors > 0 ?
+          'home-table__tr_error':''}`}>
+        <td className="home-table__td">
           <Link to={`dashboard/${props.idBoard}`} onClick={timeOutHandler}>
             {props.ipBoard} <br/> (Нажмите сюда, чтобы увидеть детали)
           </Link>
         </td>
-        <td>
+        <td className="home-table__td">
           {props.portNum}
         </td>
-        <td> {/*статус платы*/}
+        <td className="home-table__td">
         {catchFetchErrorSensore ? 'Нет ответа' :
             allErrorsSensore[allErrorsSensore.length-1].errors > 0 ? 'Ошибка' : 'OК'}
         </td>
-        <td> {/* если статус редактирования true, разрешить запись в поле*/}
+        <td className="home-table__td">
           {editStatus ?
             <textarea rows="5" cols="33"
               value={localeContent}
               placeholder="Местонахождение платы"
-              onChange={e => setLocaleContent(e.target.value)}>
+              onChange={e => setLocaleContent(e.target.value)}
+              className="home-table__textarea">
             </textarea> :
             <p style={{background:'none'}}>{props.locale}</p>
           }
         </td>
-        <td>
+        <td className="home-table__td">
           {editStatus ?
             <textarea rows="5" cols="33"
               value={noteContent}
               placeholder="Заметка о плате"
-              onChange={e => setNoteContent(e.target.value)}>
+              onChange={e => setNoteContent(e.target.value)}
+              className="home-table__textarea">
             </textarea> :
             <p style={{background:'none'}}>{props.note}</p>
           }
-        </td> {/*кнопка отправки put-запроса*/}
-        <button onClick={editManage}>{editStatus? 'Опубликовать':'Редактировать'}</button>
-        {/*кнопка отправки delete-запроса*/}
-        <button onClick={deleteRowDataBase}>Удалить</button>
+        </td>
+        <td className="home-table__td home-table__td_flex">
+          {editStatus? <img onClick={editManage} src={success_svg} alt="Опубликовать" className="home-table__svg"/>:
+          <img onClick={editManage} src={edit_svg} alt="Редактировать" className="home-table__svg"/>}
+          <img onClick={deleteRowDataBase} src={delete_svg} alt="Удалить" className="home-table__svg"/>
+        </td>
       </tr>
     </>
   )

@@ -1,5 +1,5 @@
 import React from "react";
-import '../../styles/input.css'
+import '../../styles/home-form.css'
 
 function Input(props){
   const defaultResponse = {
@@ -12,19 +12,21 @@ function Input(props){
     'VCCaux-lower':'undefined'
   }
   const [userValue, setUserValue] = React.useState('')
-  const [correctValue, setCorrectValue] = React.useState(true)
+  const [correctValue, setCorrectValue] = React.useState(false)
   const [errorText,setErrorText] = React.useState('')
   async function establishValue(userValue){
-    const hexValue = converter(userValue)
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({...defaultResponse,[props.name]: hexValue})
-    };
-    await fetch(`http://${props.ipBoard}:${props.port}/sensore`, requestOptions)
-    setUserValue('')
+    if(correctValue){
+      const hexValue = converter(userValue)
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({...defaultResponse,[props.name]: hexValue})
+      };
+      await fetch(`http://${props.ipBoard}:${props.port}/sensore`, requestOptions)
+      setUserValue('')
+    }
   }
 
   function validation(value, upperValue, lowerValue){
@@ -41,7 +43,11 @@ function Input(props){
       setErrorText('Введенное значение некорректно')
       setCorrectValue(false)
     }
-      else{
+    else if(isNaN(parseValue)){
+      setErrorText('')
+      setCorrectValue(false)
+    }
+    else{
       setCorrectValue(true)
     }
   }
@@ -55,19 +61,18 @@ function Input(props){
         validation(event.target.value, 125.0, -40.0)
         break
       case 'VCCbram-upper' || 'VCCbram-lower':
-        validation(event.target.value, 0.92, 0.86)
+        validation(event.target.value, 0.92, 0.76)
         break
       case 'VCCbram-lower':
-        validation(event.target.value, 0.92, 0.86)
+        validation(event.target.value, 0.92, 0.76)
         break
       case 'VCCaux-upper' || 'VCCaux-lower':
         validation(event.target.value, 1.89, 1.75)
         break
-      case /*  */'VCCaux-lower':
+      case 'VCCaux-lower':
         validation(event.target.value, 1.89, 1.75)
         break
     }
-    // converter(parseValue)
     setUserValue(event.target.value)
   }
 
@@ -83,14 +88,27 @@ function Input(props){
     return hexNum
   }
   return(
-    <div className="change-value">
-      <label htmlFor="">
-        Изменить {props.name.split('-')[0]} {props.name.split('-')[1]}:
-        <input type="text" value={userValue} onChange={handleChange} name={props.name} className={correctValue? '':'input-error'}/>
-        {!correctValue && <p className="warning-treshold">{errorText}</p>}
-      </label>
-      <button onClick={()=> establishValue(userValue)} disabled={correctValue ? '':'disabled'}> изменить значение </button>
-    </div>
+    <>
+      <div className="dashboard_flex dashboard__text dashboard__text_margin">
+        <label className=' dashboard__text_padding' htmlFor="">
+          Изменить {props.name.split('-')[0]} {props.name.split('-')[1]}:
+          <input type="text" value={userValue} onChange={handleChange} name={props.name}
+            className={`home-form__input home-form__input_positon${correctValue? '':'input-error'}`}
+          />
+        </label>
+        <button className='dashboard__btn dashboard__btn_little'
+          onClick={()=> establishValue(userValue)}
+          disabled={correctValue ? false:true}> изменить значение
+        </button>
+      </div>
+      {
+        !correctValue &&
+          <p className="dashboard__text dashboard__text_little dashboard__text_margin dashboard__text_padding"
+            style={{color:'rgba(244, 101, 99, 0.8)'}}>
+            {errorText}
+          </p>
+      }
+    </>
   )
 }
 

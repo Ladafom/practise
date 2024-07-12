@@ -35,7 +35,8 @@ function App(){
   const rows=[]
   for (let i = 0; i < dbData.length; i++) {
     rows.push(<Route path={`dashboard/${dbData[i].boardId}`}
-                element={<Dashboards port={dbData[i].portNum} ipBoard={dbData[i].boardIp}/>} />);
+              element={<Dashboards port={dbData[i].portNum}
+              ipBoard={dbData[i].boardIp}/>} key={dbData[i].boardId} />);
   }
   return (
     <BrowserRouter>

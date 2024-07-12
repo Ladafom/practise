@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Manrope:wght@200..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+.home-table {
+  font-family: "Roboto", sans-serif;
+  font-size: 20px;
+  line-height: 90%;
+  border: none;
+  color: #00355E;
+}
+.home-table_gray{
+  background-color: #EDECEA;
+}
+.home-table_center {
+  margin: 50px auto;
+}
+.home-table__tr{
+  background-color: rgba(117, 215, 172, 0.6);
+}
+.home-table__tr_error{
+  background-color: rgba(244, 101, 99, 0.6);
+}
+.home-table__tr_critical-error{
+  background-color: #EDECEA;
+}
+.home-table__th, .home-table__td {
+  border: none;
+  text-align: center;
+  padding: 15px 20px;
+  max-width: 300px;
+  word-break: break-all;
+}
+.home-table__td_flex {
+  display: flex;
+  justify-content: space-around;
+}
+.home-table__td > a {
+  color: #00355E;
+  text-decoration: none;
+}
+.home-table_width {
+  width: 300px;
+}
+.home-table__svg {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+.home-table__textarea, .home-form__input {
+  color: #00355E;
+  background-color: #FBF9F5;
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+}
