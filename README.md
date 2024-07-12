@@ -1,11 +1,34 @@
-# React + Vite
+# Автоматизированная система контроля и управления платой (только frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Главная страница](/src/readmeImg/main_page.png)
+![Добавление нового устройства](/src/readmeImg/add_new_device.png)
+![Изменение информации об устройстве](/src/readmeImg/change_device_info.png)
+![Дашборд устройства](/src/readmeImg/device_dashboard.png)
 
-Currently, two official plugins are available:
+# Примечание
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Проект требует работы двух серверов, которые пока не включены в репозиторий. Поэтому, на данном этапе запуск проекта не даст полноценной информации.
 
-npm install react-router-dom --save
-npm install recharts
+# Запуск проекта
+
+Установка зависимостей:
+```
+npm install
+```
+Запуск на локальном сервере:
+```
+npm run dev
+```
+# Технологический стек
+
+- React (JSX)
+- HTML
+- CSS без препроцессора
+- Библиотека пользовательского интерфейса Ant design
+- Vite
+
+# Функционал
+
+- Отображение состояния устройств
+- Добавление/удаление/редактирование устройства
+- Изменение граничных значений параметров
